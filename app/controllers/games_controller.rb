@@ -19,12 +19,7 @@ class GamesController < ApplicationController
     if attempt_match_grid?(attemp)
       url = "https://wagon-dictionary.herokuapp.com/#{attemp}"
       response_json = JSON.parse(open(url).read)
-
-      @message = if response_json['found']
-                   "Congrulations! #{attemp} is a valid English word"
-                 else
-                   "Sorry but #{attemp} does not seem to be a valid English word..."
-                 end
+      @message = set_api_message(response_json['found'], attemp)
     else
       @message = "Sorry but #{attemp} can't be built out of #{@letters.join(', ')}"
     end
@@ -41,5 +36,13 @@ class GamesController < ApplicationController
       @letters.delete_at(@letters.index(letter))
     end
     true
+  end
+
+  def set_api_message(bool, attemp)
+    if bool
+      "Congrulations! #{attemp} is a valid English word"
+    else
+      "Sorry but #{attemp} does not seem to be a valid English word..."
+    end
   end
 end
